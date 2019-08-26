@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>demo</title>
+  </head>
+
+  <style>
+    #drop_zone{
+      border: 2px solid black;
+      width:  400px;
+      height: 300px;
+    }
+  </style>
+
+  <div id="drop_zone" ondragover="dragOverHandler(event);" ondrop="dropHandler(event);">
+    <p>drag and drop here</p>
+  </div>
+
+  <div id="preview"></div>
+   
+  <script>
+    function dragOverHandler(ev){
+      ev.preventDefault();
+    }
+
+    function dropHandler(ev){
+      var i;
+      for(i=0;i < ev.dataTransfer.items.length;i++){
+        if(ev.dataTransfer.items[i].kind === 'file'){
+          var file = ev.dataTransfer.items[i].getAsFile();
+          alert(file.name);
+          
+          let url = '127.0.0.1:8080'
+          let formData = new FormData()
+
+          formData.append('file', file)
+
+          fetch(url, {
+            method: 'POST',
+            headers: {"Content-Type": "image/png"},
+            body: formData
+          })
+          .then(() => {})
+          .catch(() => {})
+
+          let reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onloadend = function(){
+            let image = document.createElement('img');
+            image.src = reader.result;
+            document.getElementById('preview').appendChild(image);
+          }
+        }
+      }
+      ev.preventDefault();
+    }
+  </script>
+</html>
