@@ -6,18 +6,29 @@
   </head>
 
   <style>
-    #drop_zone{
+    .drop_zone_class{
       border: 2px solid black;
       width:  400px;
       height: 300px;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .center_class{
+      text-align: center;
     }
   </style>
 
-  <div id="drop_zone" ondragover="dragOverHandler(event);" ondrop="dropHandler(event);">
+  <div id="drop_zone" class="drop_zone_class" ondragover="dragOverHandler(event);" ondrop="dropHandler(event);">
     <p>drag and drop here</p>
   </div>
 
-  <div id="preview"></div>
+  <div class="center_class">
+    <input type="button" value="view all" onclick="location.href='/results';"/>
+  </div>
+
+  <div id="uploaded" class="center_class"></div>
    
   <script>
     function dragOverHandler(ev){
@@ -26,6 +37,7 @@
 
     function dropHandler(ev){
       var i;
+
       for(i=0;i < ev.dataTransfer.items.length;i++){
         if(ev.dataTransfer.items[i].kind === 'file'){
           var file = ev.dataTransfer.items[i].getAsFile();
@@ -38,7 +50,7 @@
 
           fetch(url, {
             method: 'POST',
-            headers: {"Content-Type": "image/png"},
+            headers: {"Content-Type": "image/jpeg"},
             body: formData
           })
           .then(() => {})
@@ -49,7 +61,10 @@
           reader.onloadend = function(){
             let image = document.createElement('img');
             image.src = reader.result;
-            document.getElementById('preview').appendChild(image);
+            image.width = 320;
+            image.height = 240;
+            document.getElementById('uploaded').appendChild(image);
+            document.getElementById('uploaded').appendChild(document.createElement('br'));
           }
         }
       }

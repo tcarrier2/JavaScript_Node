@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>demo</title>
+  </head>
+  
+  <body onload="webpage_load();">
+    <div id="view_all"></div>
+    
+    <script>
+      function webpage_load(){
+        var requestURL = '/all_image_filenames.json';
+        var request = new XMLHttpRequest();
+        request.open('GET', requestURL);
+        request.responseType = 'json';
+        request.send();
+
+        request.onload = function(){
+          var i;
+
+          for(i=0;i < request.response['array'].length;i++){
+            image_filename = request.response['array'][i];
+            var image = document.createElement('img');
+            alert(image_filename);
+            image.src = image_filename;
+            image.alt = "image from archives";
+            image.title = "";
+            image.height = "100";
+            image.width = "160";
+            var element = document.getElementById("view_all");
+            element.appendChild(image);
+            element.appendChild(document.createTextNode(' '));
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
