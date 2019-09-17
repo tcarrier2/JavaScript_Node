@@ -4,6 +4,7 @@ var url = require('url');
 var canv = require('canvas');
 var querystring = require('querystring');
 const sqlite3 = require('sqlite3').verbose();
+var mkdirp = require('mkdirp');
 
 let db = new sqlite3.Database(':memory:', (err) => {
   if(err){
@@ -42,8 +43,11 @@ http.createServer(function (req, res){
         var image_file_info = note['Content-Disposition'].split('; ');
         var image_filename = image_file_info[2].substring(10, image_file_info[2].length-1);
 
-        fs.writeFile("archives//" + image_filename, binary_data, 'binary', function(err){
-          res.end();
+        mkdirp("archives", function(err){
+          if(err){
+            return;
+          }
+          fs.writeFile("archives/" + image_filename, binary_data, 'binary', function(err){});
         });
 
         sql_insert = `INSERT INTO all_image_filenames (image_filename) VALUES ('` + image_filename + `')`;
@@ -98,7 +102,11 @@ http.createServer(function (req, res){
       var image_filename;
       image_filename = "archives" + q.pathname;
 
-      fs.readFile(image_filename, function(err, data){  
+      fs.readFile(image_filename, function(err, data){
+        if(err){
+          res.end();
+          return;
+        }  
         res.writeHead(200, {'Content-Type': 'image/jpeg'});
         res.write(data);
         res.end();
