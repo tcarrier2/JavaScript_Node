@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>demo</title>
+  </head>
+  
+  <body onload="webpage_load();">
+    <div id="view_all"></div>
+
+    <script>
+      function traversal(leaf, level){
+        if(leaf == null){
+          return;
+        }
+
+        var str = "";
+        var i;
+        for(i=0;i<level;i++){
+          str = str + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+        }
+
+        var new_comment = document.createElement('div');
+        new_comment.innerHTML = str + leaf['content'];
+        new_comment.id = leaf['id'];
+        new_comment.ondblclick = function(){
+          localStorage.current_id = leaf['id'];
+          location.href='/forum_reply';
+        }
+        var element = document.getElementById("view_all");
+        element.appendChild(new_comment);
+        
+        for(i=0;i<leaf['children'].length;i++){
+          traversal(leaf['children'][i], level+1);  
+        }
+      }
+
+      function webpage_load(){
+        var requestURL = '/forum_tree.json';
+        var request = new XMLHttpRequest();
+        request.open('GET', requestURL);
+        request.responseType = 'json';
+        request.send();
+
+        request.onload = function(){
+          traversal(request.response, 0);
+        }
+      }
+    </script>
+  </body>
+</html>

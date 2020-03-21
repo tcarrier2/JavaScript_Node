@@ -1,0 +1,22 @@
+<html>
+  <body onload="webpage_load();">
+    <style>
+      div.center_class{
+        text-align: center;
+      }
+    </style>
+    <div class="center_class">
+      <form action="/" method="post">
+        <textarea type="text" name="send_new_content" cols="60" rows="7"></textarea>
+        <input type="text" name="send_parent_id" size="24" id="invisible" style="display:none"/><br/>
+        <button>Reply</button>
+      </form>
+    </div>
+    <script>
+      function webpage_load(){
+        var element = document.getElementById("invisible");
+        element.value = localStorage.current_id;
+      }
+    </script>
+  </body>
+</html>
