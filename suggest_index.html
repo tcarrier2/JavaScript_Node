@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>demo</title>
+  </head>
+
+  <style>
+    .center_class{
+      text-align: center;
+    }
+  </style>
+
+  <body onload="webpage_load()">
+    <div class="center_class">
+      <form action="/results" method="post">
+        <input type="text" id="user_input" name="search_term" size="32" onkeyup="send_to_server()" autocomplete="off"><br/>
+        <button>Search</button>
+      </form>
+    </div>
+  
+    <script>
+      function webpage_load(){
+        localStorage.old_response = " ";
+      }
+
+      function send_to_server(){
+        var http = new XMLHttpRequest();
+        var url = '/suggestion.json';
+        var param = 'partial=' + document.getElementById("user_input").value;
+        http.open('POST', url, true);
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        http.onreadystatechange = function(){
+          if(http.readyState == 4 && http.status == 200){}
+        }
+        http.responseType = 'json';
+        http.send(param);
+        http.onload = function(){
+          response = http.response['suggestion'];
+          user_input = document.getElementById("user_input");
+
+          if(user_input.value.length == 0){
+            localStorage.old_response = " ";
+          }
+
+          if(response.length > 0 && response != localStorage.old_response){
+            user_input.value = response;
+            localStorage.old_response = response;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
